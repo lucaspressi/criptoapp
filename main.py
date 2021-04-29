@@ -61,7 +61,7 @@ def main():
       logging.info("Nothing interesting to send...")
       pass
 
-schedule.every(2).minutes.do(main)
+schedule.every(90).minutes.do(main)
 
 while True:
     schedule.run_pending()
