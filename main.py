@@ -1,3 +1,4 @@
+import logging
 import urllib.request
 import json
 import pandas as pd
@@ -5,6 +6,9 @@ import time
 import schedule
 import requests
 
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
 
 def get_data(symbol:str):
   url = "https://api.lunarcrush.com/v2?data=assets&key=5suihgh9hmho3a8tlk728&symbol={}".format(symbol)
@@ -22,6 +26,7 @@ def data_generate(symbols):
   return data.sort_values(by='percent_change_24h', ascending=True)
 
 def main():
+    logging.info("Starting the main function...")
     cripto_info = data_generate(symbols=["BTC", "ETH", "DOGE","XRP", "BNB", "LTC", "LINK"])
     cripto_info.reset_index(level=0, inplace=True)
 
@@ -48,13 +53,15 @@ def main():
       bot_token = '1755240951:AAHcC-WMs8IPOOYN4NlPoE2J90l8gws0PUQ'
       send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
+      logging.info("Sending the message...")
       response = requests.get(send_text)
       return response.json()
 
     else:
-        pass
+      logging.info("Nothing interesting to send...")
+      pass
 
-schedule.every(30).minutes.do(main)
+schedule.every(2).minutes.do(main)
 
 while True:
     schedule.run_pending()
